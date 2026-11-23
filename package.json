@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "zod": "^3.25.0"
+  },
+  "description": "Draft-only Facebook Page MCP server (HTTP, for a Rakazo bot). Same draft tools as muse-facebook-mcp-draft, over Streamable HTTP. Built by Muse-proto.",
+  "engines": {
+    "node": ">=24"
+  },
+  "name": "muse-facebook-mcp-rakazo",
+  "private": true,
+  "scripts": {
+    "start": "node src/server.js"
+  },
+  "type": "module",
+  "version": "1.0.0"
+}
