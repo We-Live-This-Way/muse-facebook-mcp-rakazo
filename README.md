@@ -81,3 +81,9 @@ needs the `Authorization: Bearer <FB_MCP_BEARER>` header (value in this
 directory's `.env`). Register it in Rakazo as an HTTP MCP server with that URL
 and header, then confirm the bot lists the seven tools above. Keep the server
 running while any bot uses it (a user service is the durable way to do that).
+
+## appsecret_proof
+
+Every Graph API call carries `appsecret_proof` (HMAC-SHA256 of the access token, keyed with
+`FB_APP_SECRET`, hex), so the Meta app can keep **Require App Secret** turned on. The server
+refuses to start without `FB_APP_SECRET`, and never logs it.

@@ -24,6 +24,7 @@
 // file is runtime state, never committed; it holds post ids + message
 // snippets only, no tokens or secrets.
 
+import { createHmac } from "node:crypto";
 import {
   recordDraft,
   updateDraftSnippet,
@@ -33,6 +34,17 @@ import {
 } from "./drafts-store.js";
 
 const API = "https://graph.facebook.com/v21.0";
+
+// appsecret_proof: HMAC-SHA256 of the access token, keyed with the app secret, hex. Sent with
+// every Graph call so the app can keep "Require App Secret" on. The secret is set once at
+// startup by the server (from FB_APP_SECRET) and is never logged.
+let appSecret = "";
+export function setAppSecret(secret) {
+  appSecret = String(secret || "");
+}
+function appSecretProof(token) {
+  return createHmac("sha256", appSecret).update(String(token)).digest("hex");
+}
 
 function graphError(data) {
   const e = data && data.error;
@@ -47,6 +59,8 @@ async function call({ token, path, method = "GET", params = null, body = null })
       if (v !== undefined && v !== null) url.searchParams.set(k, String(v));
     }
   }
+  if (!appSecret) throw new Error("FB_APP_SECRET is not set; refusing to call the Graph API without appsecret_proof");
+  url.searchParams.set("appsecret_proof", appSecretProof(token));
   const res = await fetch(url, {
     method,
     headers: {

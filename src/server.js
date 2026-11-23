@@ -9,6 +9,7 @@ import { dirname, join } from "node:path";
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { loadEnvFiles, requireEnv } from "./env.js";
+import { setAppSecret } from "./graph.js";
 import { registerTools, TOOL_NAMES } from "./tools.js";
 
 const dir = dirname(fileURLToPath(import.meta.url));
@@ -16,7 +17,8 @@ const localEnvPath = join(dir, "..", ".env");
 const first = loadEnvFiles([localEnvPath]);
 const shared = first.FB_SHARED_ENV || process.env.FB_SHARED_ENV;
 const env = loadEnvFiles([localEnvPath, shared]);
-requireEnv(env, ["FB_PAGE_TOKEN", "FB_PAGE_ID", "FB_LONG_TOKEN", "FB_MCP_BEARER"]);
+requireEnv(env, ["FB_PAGE_TOKEN", "FB_PAGE_ID", "FB_LONG_TOKEN", "FB_MCP_BEARER", "FB_APP_SECRET"]);
+setAppSecret(env.FB_APP_SECRET);
 
 const PORT = Number(process.env.FB_MCP_PORT || env.FB_MCP_PORT || 8891);
 const HOST = "127.0.0.1";
